@@ -42,9 +42,6 @@ This repository contains all static assets and metadata used by the Foam platfor
   - Platform-specific statistics
   - Performance analytics
 
-### 🔤 **Fonts**
-- Founders Grotesk font family (all weights and styles)
-
 ## Quick Start
 
 All assets are hosted at: `https://proto.dev.foam.io/assets/`
@@ -77,7 +74,6 @@ assets/
 ├── logos/            # Corporate brand logos
 ├── photos/           # Editorial and marketing photos
 ├── videos/           # Video content
-├── fonts/            # Font files
 ├── talents.ts        # TypeScript talent data with Instagram metrics
 ├── fake_talent_dataset_100.csv  # Analytics dataset
 └── ASSETS_README.md  # Detailed asset documentation

@@ -104,6 +104,7 @@ https://proto.dev.foam.io/assets/logos/logo_uber.webp
 https://proto.dev.foam.io/assets/logos/logo_verizon.webp
 https://proto.dev.foam.io/assets/logos/logo_walmart.webp
 https://proto.dev.foam.io/assets/logos/logo_white_text_dark_bg.png
+https://proto.dev.foam.io/assets/logos/logo_nike.webp
 ```
 
 ---
@@ -662,84 +663,6 @@ https://proto.dev.foam.io/assets/photos/nike/image4.jpg
 
 ---
 
-## fonts
-
-### Purpose
-Provides consistent typography across the application using Google Fonts.
-
-### Font Family
-**Hanken Grotesk** - Primary brand typeface for headings, body text, and UI elements.
-
-### Features
-- Variable font from Google Fonts for optimal performance and flexibility
-- Font weights available: Variable (100-900) - any weight value between 100 and 900
-- Styles available: Normal and Italic for all weights
-- Preconnect to Google Fonts for faster loading performance
-
-### Implementation
-
-**Method 1: Link Tags (Recommended)**
-
-```html
-<!-- Embed in <head> -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-```
-
-**Method 2: CSS Import**
-
-```css
-/* Embed in <head> */
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
-```
-
-### Font Weight Guidelines
-
-- **Light (300):** Subtle text, captions, secondary information
-- **Regular (400):** Body text, paragraphs, general content
-- **Medium (500):** Emphasis, subheadings, important text
-- **Semi Bold (600):** Headings, titles, prominent text
-- **Bold (700):** Main headings, hero text, strong emphasis
-- **Italic variants:** Available for all weights - use for emphasis, quotes, or stylistic variation
-
-### CSS Implementation
-
-```css
-/* Variable font approach */
-.hanken-grotesk {
-  font-family: "Hanken Grotesk", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400; /* Use any value from 100-900 */
-  font-style: normal;
-}
-
-/* Italic variant */
-.hanken-grotesk-italic {
-  font-family: "Hanken Grotesk", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400; /* Use any value from 100-900 */
-  font-style: italic;
-}
-
-/* Example weight classes */
-.hanken-grotesk-light {
-  font-family: "Hanken Grotesk", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-style: normal;
-}
-
-.hanken-grotesk-bold {
-  font-family: "Hanken Grotesk", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-}
-```
-
----
-
 ## Summary
 
 **Total Assets:**
@@ -759,7 +682,6 @@ Provides consistent typography across the application using Google Fonts.
 - 8 coffee videos (mp4)
 - 4 TikTok video thumbnails (jpg)
 - 4 TikTok videos (mp4)
-- 1 font family (variable weights)
 
 **Base URL:** `https://proto.dev.foam.io/assets/`
 
