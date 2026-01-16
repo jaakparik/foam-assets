@@ -401,6 +401,10 @@ https://proto.dev.foam.io/assets/videos/male_mrbeast_2_instagram_portrait.mp4
 https://proto.dev.foam.io/assets/videos/male_mrbeast_3_instagram_portrait.mp4
 https://proto.dev.foam.io/assets/videos/male_mrbeast_4_instagram_portrait.mp4
 https://proto.dev.foam.io/assets/videos/male_mrbeast_instagram_portrait.mp4
+https://proto.dev.foam.io/assets/videos/nike1.mp4
+https://proto.dev.foam.io/assets/videos/nike2.mp4
+https://proto.dev.foam.io/assets/videos/nike3.mp4
+https://proto.dev.foam.io/assets/videos/nike4.mp4
 https://proto.dev.foam.io/assets/videos/spanish_news_2_instagram_portrait.mp4
 https://proto.dev.foam.io/assets/videos/spanish_news_instagram_portrait.mp4
 ```
@@ -670,7 +674,7 @@ https://proto.dev.foam.io/assets/photos/nike/image4.jpg
 - 32 corporate logos  
 - 25 color icons
 - 129 regular icons
-- 31 videos
+- 35 videos
 - 33 animal avatars
 - 28 male avatars
 - 16 female avatars
