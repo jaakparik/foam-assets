@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foam Assets Demo</title>
+    
+    <!-- Hanken Grotesk Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "Hanken Grotesk", sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background: #fafafa;
+            font-optical-sizing: auto;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        h1 { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            color: #1a1a1a; 
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .section { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 24px; 
+            margin-bottom: 24px; 
+           /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+        }
+        .section h2 { 
+            color: #155FEF; 
+            margin-bottom: 16px; 
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .section p { margin-bottom: 16px; color: #6b7280; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 16px; 
+            margin-top: 20px;
+        }
+        .asset-card { 
+            /* background: #f8fafc;  */
+            /* border: 1px solid #e2e8f0;  */
+            border-radius: 8px; 
+            padding: 4px; 
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .asset-card:hover { 
+            transform: translateY(-2px); 
+            /* box-shadow: 0 4px 12px rgba(0,0,0,0.15); */
+            border-color: #155FEF;
+        }
+        .asset-card img, .asset-card video { 
+            width: 100%; 
+            height: 120px; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            margin-bottom: 12px;
+            background: #e5e7eb;
+        }
+        .asset-card .icon { 
+            width: 100%; 
+            height: 120px; 
+            background: #f1f5f9; 
+            border-radius: 6px; 
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #64748b;
+        }
+        .asset-card .font { 
+            width: 100%; 
+            height: 120px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            border-radius: 6px; 
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+        }
+        .asset-name { 
+            font-size: 0.875rem; 
+            color: #374151; 
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        .search { 
+            flex: 0 0 auto;
+        }
+        .search input { 
+            width: 200px; 
+            padding: 8px 12px; 
+            border: 1px solid #d1d5db; 
+            border-radius: 6px; 
+            font-size: 0.875rem;
+            outline: none;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .search input:focus { 
+            border-color: #155FEF; 
+            box-shadow: 0 0 0 3px rgba(21, 95, 239, 0.1);
+        }
+
+        .hidden { display: none; }
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        .stats { 
+            color: #6b7280;
+            font-size: 10px;
+            flex: 0 0 auto;
+        }
+        .header-row h1 {
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+        .copy-url { 
+            background: #155FEF; 
+            color: white; 
+            border: none; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.75rem; 
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .copy-url:hover { background: #0F46FF; }
+        .copy-success { background: #0F46FF !important; }
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #155FEF;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+                    .copy-notification.show {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            
+            /* Make regular icons visible and adjust font size */
+            img[src*="/icons/regular/"] {
+                filter: invert(1) brightness(0.3);
+                width: 16px !important;
+                height: 16px !important;
+                background: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Smaller font for regular icon names */
+            .asset-card[data-name$=".svg"][data-type="icons"] .asset-name {
+                font-size: 10px !important;
+            }
+            
+            /* Clean styling for brand logos - remove backgrounds */
+            img[src*="/brand/"] {
+                background: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                height: auto !important;
+                max-height: 60px !important;
+            }
+            
+            /* Clean styling for color icons - remove backgrounds */
+            img[src*="/icons/color/"] {
+                background: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                width: 32px !important;
+                height: 32px !important;
+            }
+            
+            /* Clean styling for avatars - remove backgrounds */
+            img[src*="/avatars/"] {
+                background: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                width: 200px !important;
+                height: 200px !important;
+                object-fit: cover !important;
+            }
+            
+            /* Hide avatar names */
+            .asset-card[data-type="avatars"] .asset-name {
+                display: none !important;
+            }
+            
+            /* Avatar grid layout with 20px gaps */
+            .section[data-category="avatars"] .grid {
+                gap: 20px !important;
+            }
+            
+            /* Avatar cards without padding/margin */
+            .asset-card[data-type="avatars"] {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            /* Clean styling for photos - remove backgrounds, maintain aspect ratio */
+            img[src*="/photos/"] {
+                background: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                width: 200px !important;
+                height: auto !important;
+                object-fit: cover !important;
+            }
+            
+            /* Clean styling for videos - remove backgrounds, maintain aspect ratio */
+            video[src*="/videos/"] {
+                background: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                object-fit: cover !important;
+            }
+            
+            /* Portrait videos (9:16 aspect ratio) */
+            video.portrait {
+                width: 150px !important;
+                height: 267px !important;
+            }
+            
+            /* Landscape videos (16:9 aspect ratio) */
+            video.landscape {
+                width: 200px !important;
+                height: 113px !important;
+            }
+            
+            /* Hide photo and video names */
+            .asset-card[data-type="photos"] .asset-name,
+            .asset-card[data-type="videos"] .asset-name {
+                display: none !important;
+            }
+            
+            /* Photo and video grid layout with 20px gaps */
+            .section[data-category="photos"] .grid,
+            .section[data-category="videos"] .grid {
+                gap: 20px !important;
+            }
+            
+            /* Photo and video cards without padding/margin */
+            .asset-card[data-type="photos"],
+            .asset-card[data-type="videos"] {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="header-row">
+        <div class="stats">
+            <span id="total-count">0</span> total assets • 
+            <span id="visible-count">0</span> visible
+        </div>
+            
+            <h1>Foam Assets Demo</h1>
+
+        <div class="search">
+            <input type="text" id="searchInput" placeholder="Search assets by name, type, or description...">
+        </div>
+        </div>
+
+        <!-- Brand Section -->
+        <div class="section" data-category="brand">
+            <h2>Brand Assets</h2>
+            <p>Official Foam brand logos in various formats and color schemes. Use light variants for light backgrounds and dark variants for dark backgrounds. Click any logo to copy its URL.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="foam_logo_outline_text_light.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_outline_text_light.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_outline_text_light.svg" alt="Foam Logo Outline Light" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_outline_text_light.svg</div>
+                </div>
+                <div class="asset-card" data-name="foam_logo_filled_text_light.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_filled_text_light.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_filled_text_light.svg" alt="Foam Logo Filled Light" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_filled_text_light.svg</div>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_filled_light.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_filled_light.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_square_filled_light.svg" alt="Foam Logo Square Filled Light" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_square_filled_light.svg</div>
+                </div>
+                <div class="asset-card" data-name="foam_logo_filled_text_dark.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_filled_text_dark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_filled_text_dark.svg" alt="Foam Logo Filled Dark" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_filled_text_dark.svg</div>
+                </div>
+                <div class="asset-card" data-name="foam_logo_outline_text_dark.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_outline_text_dark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_outline_text_dark.svg" alt="Foam Logo Outline Dark" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_outline_text_dark.svg</div>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_filled_dark.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_filled_dark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_square_filled_dark.svg" alt="Foam Logo Square Filled Dark" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_square_filled_dark.svg</div>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_outline_dark.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_outline_dark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_square_outline_dark.svg" alt="Foam Logo Square Outline Dark" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_square_outline_dark.svg</div>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_outline_light.svg" data-type="brand" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_outline_light.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/brand/foam_logo_square_outline_light.svg" alt="Foam Logo Square Outline Light" style="width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">foam_logo_square_outline_light.svg</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Icons Color Section -->
+        <div class="section" data-category="icons">
+            <h2>Color Icons</h2>
+            <p>Full-color icons representing brands, platforms, and app features. Commonly used at 16x16px in UI. Click any icon to copy its URL.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="Instagram.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Instagram.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Instagram.svg" alt="Instagram icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Instagram.svg</div>
+                </div>
+                <div class="asset-card" data-name="TikTok.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/TikTok.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/TikTok.svg" alt="TikTok icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TikTok.svg</div>
+                </div>
+                <div class="asset-card" data-name="YouTube.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/YouTube.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/YouTube.svg" alt="YouTube icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">YouTube.svg</div>
+                </div>
+                <div class="asset-card" data-name="LinkedIn.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/LinkedIn.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/LinkedIn.svg" alt="LinkedIn icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">LinkedIn.svg</div>
+                </div>
+                <div class="asset-card" data-name="Google.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Google.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Google.svg" alt="Google icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Google.svg</div>
+                </div>
+                <div class="asset-card" data-name="Facebook.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Facebook.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Facebook.svg" alt="Facebook icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Facebook.svg</div>
+                </div>
+                <div class="asset-card" data-name="Microsoft.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Microsoft.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Microsoft.svg" alt="Microsoft icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Microsoft.svg</div>
+                </div>
+                <div class="asset-card" data-name="FilePdf.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/FilePdf.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/FilePdf.svg" alt="PDF File icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">FilePdf.svg</div>
+                </div>
+                <div class="asset-card" data-name="analytics_ce.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Analytics_ce.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Analytics_ce.svg" alt="Analytics icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">analytics_ce.svg</div>
+                </div>
+                <div class="asset-card" data-name="email_ce.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Email_ce.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Email_ce.svg" alt="Email icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">email_ce.svg</div>
+                </div>
+                <div class="asset-card" data-name="Acrobat.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Acrobat.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Acrobat.svg" alt="Acrobat icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Acrobat.svg</div>
+                </div>
+                <div class="asset-card" data-name="FileCustom.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/FileCustom.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/FileCustom.svg" alt="Custom File icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">FileCustom.svg</div>
+                </div>
+                <div class="asset-card" data-name="FileSheet.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/FileSheet.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/FileSheet.svg" alt="Spreadsheet icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">FileSheet.svg</div>
+                </div>
+                <div class="asset-card" data-name="Gmail.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Gmail.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Gmail.svg" alt="Gmail icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Gmail.svg</div>
+                </div>
+                <div class="asset-card" data-name="Imagesearch_ce.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Imagesearch_ce.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Imagesearch_ce.svg" alt="Image Search icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Imagesearch_ce.svg</div>
+                </div>
+                <div class="asset-card" data-name="InstagramDark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/InstagramDark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/InstagramDark.svg" alt="Instagram Dark icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">InstagramDark.svg</div>
+                </div>
+                <div class="asset-card" data-name="LinkedInDark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/LinkedInDark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/LinkedInDark.svg" alt="LinkedIn Dark icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">LinkedInDark.svg</div>
+                </div>
+                <div class="asset-card" data-name="Pinterest.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Pinterest.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Pinterest.svg" alt="Pinterest icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Pinterest.svg</div>
+                </div>
+                <div class="asset-card" data-name="PinterestDark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/PinterestDark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/PinterestDark.svg" alt="Pinterest Dark icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">PinterestDark.svg</div>
+                </div>
+                <div class="asset-card" data-name="Sheets.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Sheets.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Sheets.svg" alt="Google Sheets icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Sheets.svg</div>
+                </div>
+                <div class="asset-card" data-name="Slack.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Slack.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Slack.svg" alt="Slack icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Slack.svg</div>
+                </div>
+                <div class="asset-card" data-name="Snap.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Snap.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Snap.svg" alt="Snapchat icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Snap.svg</div>
+                </div>
+                <div class="asset-card" data-name="TikTokDark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/TikTokDark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/TikTokDark.svg" alt="TikTok Dark icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TikTokDark.svg</div>
+                </div>
+                <div class="asset-card" data-name="Twitch.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Twitch.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/Twitch.svg" alt="Twitch icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Twitch.svg</div>
+                </div>
+                <div class="asset-card" data-name="TwitchDark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/TwitchDark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/color/TwitchDark.svg" alt="Twitch Dark icon" style="width: 80px; height: 80px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TwitchDark.svg</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Icons Regular Section -->
+        <div class="section" data-category="icons" >
+            <h2>Regular Icons (129)</h2>
+            <p>Monochrome line-style icons for UI controls and interactions. Common size is 16x16px. Click any icon to copy its URL.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="AddContent.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/AddContent.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/AddContent.svg" alt="Add Content icon" style="width: 16px; height: 16px; object-fit: contain; margin-bottom: 12px;">
+                    <div class="asset-name" style="font-size: 12px;">AddContent.svg</div>
+                </div>
+                <div class="asset-card" data-name="Alert.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Alert.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Alert.svg" alt="Alert icon" style="width: 16px; height: 16px; object-fit: contain; margin-bottom: 12px;">
+                    <div class="asset-name" style="font-size: 12px;">Alert.svg</div>
+                </div>
+                <div class="asset-card" data-name="Apps.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Apps.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Apps.svg" alt="Apps icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Apps.svg</div>
+                </div>
+                <div class="asset-card" data-name="Archive.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Archive.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Archive.svg" alt="Archive icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Archive.svg</div>
+                </div>
+                <div class="asset-card" data-name="ArchiveArrowUp.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ArchiveArrowUp.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ArchiveArrowUp.svg" alt="Archive Arrow Up icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ArchiveArrowUp.svg</div>
+                </div>
+                <div class="asset-card" data-name="ArrowDown.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ArrowDown.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ArrowDown.svg" alt="Arrow Down icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ArrowDown.svg</div>
+                </div>
+                <div class="asset-card" data-name="ArrowLeft.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ArrowLeft.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ArrowLeft.svg" alt="Arrow Left icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ArrowLeft.svg</div>
+                </div>
+                <div class="asset-card" data-name="ArrowRight.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ArrowRight.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ArrowRight.svg" alt="Arrow Right icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ArrowRight.svg</div>
+                </div>
+                <div class="asset-card" data-name="ArrowUp.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ArrowUp.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ArrowUp.svg" alt="Arrow Up icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ArrowUp.svg</div>
+                </div>
+                <div class="asset-card" data-name="At.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/At.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/At.svg" alt="At icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">At.svg</div>
+                </div>
+                <div class="asset-card" data-name="Bell.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Bell.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Bell.svg" alt="Bell icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Bell.svg</div>
+                </div>
+                <div class="asset-card" data-name="Block.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Block.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Block.svg" alt="Block icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Block.svg</div>
+                </div>
+                <div class="asset-card" data-name="Bookmark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Bookmark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Bookmark.svg" alt="Bookmark icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Bookmark.svg</div>
+                </div>
+                <div class="asset-card" data-name="Calendar.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Calendar.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Calendar.svg" alt="Calendar icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Calendar.svg</div>
+                </div>
+                <div class="asset-card" data-name="Chat.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Chat.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Chat.svg" alt="Chat icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Chat.svg</div>
+                </div>
+                <div class="asset-card" data-name="Chats.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Chats.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Chats.svg" alt="Chats icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Chats.svg</div>
+                </div>
+                <div class="asset-card" data-name="Checkbox.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Checkbox.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Checkbox.svg" alt="Checkbox icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Checkbox.svg</div>
+                </div>
+                <div class="asset-card" data-name="Checkmark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Checkmark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Checkmark.svg" alt="Checkmark icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Checkmark.svg</div>
+                </div>
+                <div class="asset-card" data-name="ChevronDown.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ChevronDown.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ChevronDown.svg" alt="Chevron Down icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ChevronDown.svg</div>
+                </div>
+                <div class="asset-card" data-name="ChevronLeft.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ChevronLeft.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ChevronLeft.svg" alt="Chevron Left icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ChevronLeft.svg</div>
+                </div>
+                <div class="asset-card" data-name="ChevronRight.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ChevronRight.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ChevronRight.svg" alt="Chevron Right icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ChevronRight.svg</div>
+                </div>
+                <div class="asset-card" data-name="ChevronUp.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ChevronUp.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ChevronUp.svg" alt="Chevron Up icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ChevronUp.svg</div>
+                </div>
+                <div class="asset-card" data-name="Click.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Click.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Click.svg" alt="Click icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Click.svg</div>
+                </div>
+                <div class="asset-card" data-name="Close.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Close.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Close.svg" alt="Close icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Close.svg</div>
+                </div>
+                <div class="asset-card" data-name="Cogwheel.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Cogwheel.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Cogwheel.svg" alt="Settings icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Cogwheel.svg</div>
+                </div>
+                <div class="asset-card" data-name="Command.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Command.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Command.svg" alt="Command icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Command.svg</div>
+                </div>
+                <div class="asset-card" data-name="Copy.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Copy.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Copy.svg" alt="Copy icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Copy.svg</div>
+                </div>
+                <div class="asset-card" data-name="Dollar.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Dollar.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Dollar.svg" alt="Dollar icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Dollar.svg</div>
+                </div>
+                <div class="asset-card" data-name="Download.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Download.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Download.svg" alt="Download icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Download.svg</div>
+                </div>
+                <div class="asset-card" data-name="Edit.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Edit.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Edit.svg" alt="Edit icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Edit.svg</div>
+                </div>
+                <div class="asset-card" data-name="Editor.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Editor.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Editor.svg" alt="Editor icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Editor.svg</div>
+                </div>
+                <div class="asset-card" data-name="EmojiSad.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/EmojiSad.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/EmojiSad.svg" alt="Emoji Sad icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">EmojiSad.svg</div>
+                </div>
+                <div class="asset-card" data-name="Envelope.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Envelope.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Envelope.svg" alt="Envelope icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Envelope.svg</div>
+                </div>
+                <div class="asset-card" data-name="EnvelopeMove.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/EnvelopeMove.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/EnvelopeMove.svg" alt="Envelope Move icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">EnvelopeMove.svg</div>
+                </div>
+                <div class="asset-card" data-name="EnvelopePlus.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/EnvelopePlus.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/EnvelopePlus.svg" alt="Envelope Plus icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">EnvelopePlus.svg</div>
+                </div>
+                <div class="asset-card" data-name="Error.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Error.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Error.svg" alt="Error icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Error.svg</div>
+                </div>
+                <div class="asset-card" data-name="Expand.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Expand.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Expand.svg" alt="Expand icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Expand.svg</div>
+                </div>
+                <div class="asset-card" data-name="Eye.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Eye.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Eye.svg" alt="Eye icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Eye.svg</div>
+                </div>
+                <div class="asset-card" data-name="EyeOff.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/EyeOff.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/EyeOff.svg" alt="Eye Off icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">EyeOff.svg</div>
+                </div>
+                <div class="asset-card" data-name="File.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/File.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/File.svg" alt="File icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">File.svg</div>
+                </div>
+                <div class="asset-card" data-name="Filter.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Filter.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Filter.svg" alt="Filter icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Filter.svg</div>
+                </div>
+                <div class="asset-card" data-name="FilterDown.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/FilterDown.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/FilterDown.svg" alt="Filter Down icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">FilterDown.svg</div>
+                </div>
+                <div class="asset-card" data-name="Flame.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Flame.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Flame.svg" alt="Flame icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Flame.svg</div>
+                </div>
+                <div class="asset-card" data-name="Globe.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Globe.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Globe.svg" alt="Globe icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Globe.svg</div>
+                </div>
+                <div class="asset-card" data-name="Grid-1.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Grid-1.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Grid-1.svg" alt="Grid 1 icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Grid-1.svg</div>
+                </div>
+                <div class="asset-card" data-name="Grid-2.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Grid-2.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Grid-2.svg" alt="Grid 2 icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Grid-2.svg</div>
+                </div>
+                <div class="asset-card" data-name="Grid.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Grid.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Grid.svg" alt="Grid icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Grid.svg</div>
+                </div>
+                <div class="asset-card" data-name="Heart.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Heart.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Heart.svg" alt="Heart icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Heart.svg</div>
+                </div>
+                <div class="asset-card" data-name="History.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/History.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/History.svg" alt="History icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">History.svg</div>
+                </div>
+                <div class="asset-card" data-name="Home.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Home.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Home.svg" alt="Home icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Home.svg</div>
+                </div>
+                <div class="asset-card" data-name="Hotspot.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Hotspot.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Hotspot.svg" alt="Hotspot icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Hotspot.svg</div>
+                </div>
+                <div class="asset-card" data-name="Import.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Import.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Import.svg" alt="Import icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Import.svg</div>
+                </div>
+                <div class="asset-card" data-name="Inbox.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Inbox.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Inbox.svg" alt="Inbox icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Inbox.svg</div>
+                </div>
+                <div class="asset-card" data-name="Info.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Info.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Info.svg" alt="Info icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Info.svg</div>
+                </div>
+                <div class="asset-card" data-name="Link.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Link.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Link.svg" alt="Link icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Link.svg</div>
+                </div>
+                <div class="asset-card" data-name="List.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/List.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/List.svg" alt="List icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">List.svg</div>
+                </div>
+                <div class="asset-card" data-name="Location.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Location.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Location.svg" alt="Location icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Location.svg</div>
+                </div>
+                <div class="asset-card" data-name="Lock.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Lock.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Lock.svg" alt="Lock icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Lock.svg</div>
+                </div>
+                <div class="asset-card" data-name="Magic.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Magic.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Magic.svg" alt="Magic icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Magic.svg</div>
+                </div>
+                <div class="asset-card" data-name="Mediapacks.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Mediapacks.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Mediapacks.svg" alt="Mediapacks icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Mediapacks.svg</div>
+                </div>
+                <div class="asset-card" data-name="Menu.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Menu.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Menu.svg" alt="Menu icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Menu.svg</div>
+                </div>
+                <div class="asset-card" data-name="Minus.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Minus.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Minus.svg" alt="Minus icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Minus.svg</div>
+                </div>
+                <div class="asset-card" data-name="More.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/More.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/More.svg" alt="More icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">More.svg</div>
+                </div>
+                <div class="asset-card" data-name="Move.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Move.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Move.svg" alt="Move icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Move.svg</div>
+                </div>
+                <div class="asset-card" data-name="MoveDots.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/MoveDots.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/MoveDots.svg" alt="Move Dots icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">MoveDots.svg</div>
+                </div>
+                <div class="asset-card" data-name="Offline.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Offline.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Offline.svg" alt="Offline icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Offline.svg</div>
+                </div>
+                <div class="asset-card" data-name="Open.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Open.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Open.svg" alt="Open icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Open.svg</div>
+                </div>
+                <div class="asset-card" data-name="Options.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Options.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Options.svg" alt="Options icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Options.svg</div>
+                </div>
+                <div class="asset-card" data-name="Person.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Person.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Person.svg" alt="Person icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Person.svg</div>
+                </div>
+                <div class="asset-card" data-name="PersonAdd.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/PersonAdd.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/PersonAdd.svg" alt="Person Add icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">PersonAdd.svg</div>
+                </div>
+                <div class="asset-card" data-name="PersonChange.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/PersonChange.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/PersonChange.svg" alt="Person Change icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">PersonChange.svg</div>
+                </div>
+                <div class="asset-card" data-name="Persons.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Persons.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Persons.svg" alt="Persons icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Persons.svg</div>
+                </div>
+                <div class="asset-card" data-name="PersonSettings.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/PersonSettings.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/PersonSettings.svg" alt="Person Settings icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">PersonSettings.svg</div>
+                </div>
+                <div class="asset-card" data-name="Picture.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Picture.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Picture.svg" alt="Picture icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Picture.svg</div>
+                </div>
+                <div class="asset-card" data-name="Pictures.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Pictures.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Pictures.svg" alt="Pictures icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Pictures.svg</div>
+                </div>
+                <div class="asset-card" data-name="Pin.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Pin.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Pin.svg" alt="Pin icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Pin.svg</div>
+                </div>
+                <div class="asset-card" data-name="PinFilled.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/PinFilled.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/PinFilled.svg" alt="Pin Filled icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">PinFilled.svg</div>
+                </div>
+                <div class="asset-card" data-name="Play.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Play.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Play.svg" alt="Play icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Play.svg</div>
+                </div>
+                <div class="asset-card" data-name="Plus.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Plus.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Plus.svg" alt="Plus icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Plus.svg</div>
+                </div>
+                <div class="asset-card" data-name="Promote.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Promote.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Promote.svg" alt="Promote icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Promote.svg</div>
+                </div>
+                <div class="asset-card" data-name="PromoteActive.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/PromoteActive.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/PromoteActive.svg" alt="Promote Active icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">PromoteActive.svg</div>
+                </div>
+                <div class="asset-card" data-name="Question.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Question.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Question.svg" alt="Question icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Question.svg</div>
+                </div>
+                <div class="asset-card" data-name="QuotationLeft.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/QuotationLeft.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/QuotationLeft.svg" alt="Quotation Left icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">QuotationLeft.svg</div>
+                </div>
+                <div class="asset-card" data-name="QuotationRight.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/QuotationRight.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/QuotationRight.svg" alt="Quotation Right icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">QuotationRight.svg</div>
+                </div>
+                <div class="asset-card" data-name="Reach.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Reach.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Reach.svg" alt="Reach icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Reach.svg</div>
+                </div>
+                <div class="asset-card" data-name="Reel.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Reel.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Reel.svg" alt="Reel icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Reel.svg</div>
+                </div>
+                <div class="asset-card" data-name="Refresh.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Refresh.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Refresh.svg" alt="Refresh icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Refresh.svg</div>
+                </div>
+                <div class="asset-card" data-name="Reload.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Reload.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Reload.svg" alt="Reload icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Reload.svg</div>
+                </div>
+                <div class="asset-card" data-name="Reply.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Reply.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Reply.svg" alt="Reply icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Reply.svg</div>
+                </div>
+                <div class="asset-card" data-name="Save.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Save.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Save.svg" alt="Save icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Save.svg</div>
+                </div>
+                <div class="asset-card" data-name="Search.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Search.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Search.svg" alt="Search icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Search.svg</div>
+                </div>
+                <div class="asset-card" data-name="SearchPerson.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/SearchPerson.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/SearchPerson.svg" alt="Search Person icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">SearchPerson.svg</div>
+                </div>
+                <div class="asset-card" data-name="Share.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Share.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Share.svg" alt="Share icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Share.svg</div>
+                </div>
+                <div class="asset-card" data-name="Sidepanel.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Sidepanel.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Sidepanel.svg" alt="Sidepanel icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Sidepanel.svg</div>
+                </div>
+                <div class="asset-card" data-name="SignOut.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/SignOut.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/SignOut.svg" alt="Sign Out icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">SignOut.svg</div>
+                </div>
+                <div class="asset-card" data-name="Sort.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Sort.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Sort.svg" alt="Sort icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Sort.svg</div>
+                </div>
+                <div class="asset-card" data-name="SortDown.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/SortDown.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/SortDown.svg" alt="Sort Down icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">SortDown.svg</div>
+                </div>
+                <div class="asset-card" data-name="SortUp.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/SortUp.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/SortUp.svg" alt="Sort Up icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">SortUp.svg</div>
+                </div>
+                <div class="asset-card" data-name="Speaker.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Speaker.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Speaker.svg" alt="Speaker icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Speaker.svg</div>
+                </div>
+                <div class="asset-card" data-name="SpeakerOff.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/SpeakerOff.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/SpeakerOff.svg" alt="Speaker Off icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">SpeakerOff.svg</div>
+                </div>
+                <div class="asset-card" data-name="Spinner.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Spinner.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Spinner.svg" alt="Spinner icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Spinner.svg</div>
+                </div>
+                <div class="asset-card" data-name="Star.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Star.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Star.svg" alt="Star icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Star.svg</div>
+                </div>
+                <div class="asset-card" data-name="Stats.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Stats.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Stats.svg" alt="Stats icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Stats.svg</div>
+                </div>
+                <div class="asset-card" data-name="Stop.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Stop.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Stop.svg" alt="Stop icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Stop.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextAlignCenter.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextAlignCenter.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextAlignCenter.svg" alt="Text Align Center icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextAlignCenter.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextAlignJustified.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextAlignJustified.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextAlignJustified.svg" alt="Text Align Justified icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextAlignJustified.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextAlignLeft.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextAlignLeft.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextAlignLeft.svg" alt="Text Align Left icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextAlignLeft.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextAlignRight.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextAlignRight.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextAlignRight.svg" alt="Text Align Right icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextAlignRight.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextBoldIcon.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextBoldIcon.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextBoldIcon.svg" alt="Text Bold icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextBoldIcon.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextIndentLeft.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextIndentLeft.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextIndentLeft.svg" alt="Text Indent Left icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextIndentLeft.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextIndentRight.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextIndentRight.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextIndentRight.svg" alt="Text Indent Right icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextIndentRight.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextItalicIcon.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextItalicIcon.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextItalicIcon.svg" alt="Text Italic icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextItalicIcon.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextListBulleted.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextListBulleted.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextListBulleted.svg" alt="Text List Bulleted icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextListBulleted.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextListNumbers.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextListNumbers.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextListNumbers.svg" alt="Text List Numbers icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextListNumbers.svg</div>
+                </div>
+                <div class="asset-card" data-name="TextStyleRemove.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/TextStyleRemove.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/TextStyleRemove.svg" alt="Text Style Remove icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">TextStyleRemove.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThemeDark.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThemeDark.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThemeDark.svg" alt="Theme Dark icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThemeDark.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThemeDarkFilled.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThemeDarkFilled.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThemeDarkFilled.svg" alt="Theme Dark Filled icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThemeDarkFilled.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThemeLight.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThemeLight.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThemeLight.svg" alt="Theme Light icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThemeLight.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThemeLightFilled.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThemeLightFilled.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThemeLightFilled.svg" alt="Theme Light Filled icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThemeLightFilled.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThemeSystem.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThemeSystem.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThemeSystem.svg" alt="Theme System icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThemeSystem.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThemeSystemFilled.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThemeSystemFilled.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThemeSystemFilled.svg" alt="Theme System Filled icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThemeSystemFilled.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThumbDownFilled.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThumbDownFilled.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThumbDownFilled.svg" alt="Thumb Down Filled icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThumbDownFilled.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThumbsDown.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThumbsDown.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThumbsDown.svg" alt="Thumbs Down icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThumbsDown.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThumbUp.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThumbUp.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThumbUp.svg" alt="Thumb Up icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThumbUp.svg</div>
+                </div>
+                <div class="asset-card" data-name="ThumbUpFilled.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/ThumbUpFilled.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/ThumbUpFilled.svg" alt="Thumb Up Filled icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">ThumbUpFilled.svg</div>
+                </div>
+                <div class="asset-card" data-name="Trash.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Trash.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Trash.svg" alt="Trash icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Trash.svg</div>
+                </div>
+                <div class="asset-card" data-name="Unlink.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Unlink.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Unlink.svg" alt="Unlink icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Unlink.svg</div>
+                </div>
+                <div class="asset-card" data-name="Unlock.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Unlock.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Unlock.svg" alt="Unlock icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Unlock.svg</div>
+                </div>
+                <div class="asset-card" data-name="Upload.svg" data-type="icons" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Upload.svg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/icons/regular/Upload.svg" alt="Upload icon" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 20px;">
+                    <div class="asset-name" style="font-size: 12px;">Upload.svg</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Avatars Section -->
+        <div class="section" data-category="avatars">
+            <h2>Avatar Images</h2>
+            <p>High-quality avatar images for profiles, demos, and character representation. Click any avatar to copy its URL.</p>
+            
+            <!-- Animal Avatars -->
+            <h3>Animal Avatars (33)</h3>
+            <div class="grid">
+                <div class="asset-card" data-name="beetle.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/beetle.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/beetle.jpeg" alt="Beetle avatar">
+                    <div class="asset-name" style="font-size: 10px;">beetle.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="bird.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/bird.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/bird.jpeg" alt="Bird avatar">
+                    <div class="asset-name" style="font-size: 10px;">bird.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="bug.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/bug.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/bug.jpeg" alt="Bug avatar">
+                    <div class="asset-name" style="font-size: 10px;">bug.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="butterfly.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/butterfly.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/butterfly.jpeg" alt="Butterfly avatar">
+                    <div class="asset-name" style="font-size: 10px;">butterfly.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="cat.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/cat.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/cat.jpeg" alt="Cat avatar">
+                    <div class="asset-name" style="font-size: 10px;">cat.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="chameleon.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/chameleon.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/chameleon.jpeg" alt="Chameleon avatar">
+                    <div class="asset-name" style="font-size: 10px;">chameleon.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="corn.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/corn.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/corn.jpeg" alt="Corn avatar">
+                    <div class="asset-name" style="font-size: 10px;">corn.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="cow.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/cow.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/cow.jpeg" alt="Cow avatar">
+                    <div class="asset-name" style="font-size: 10px;">cow.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="crab.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/crab.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/crab.jpeg" alt="Crab avatar">
+                    <div class="asset-name" style="font-size: 10px;">crab.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="crocodile.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/crocodile.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/crocodile.jpeg" alt="Crocodile avatar">
+                    <div class="asset-name" style="font-size: 10px;">crocodile.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="dog.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/dog.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/dog.jpeg" alt="Dog avatar">
+                    <div class="asset-name" style="font-size: 10px;">dog.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="duck.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/duck.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/duck.jpeg" alt="Duck avatar">
+                    <div class="asset-name" style="font-size: 10px;">duck.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="eagle.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/eagle.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/eagle.jpeg" alt="Eagle avatar">
+                    <div class="asset-name" style="font-size: 10px;">eagle.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="elephant.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/elephant.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/elephant.jpeg" alt="Elephant avatar">
+                    <div class="asset-name" style="font-size: 10px;">elephant.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="fish.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/fish.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/fish.jpeg" alt="Fish avatar">
+                    <div class="asset-name" style="font-size: 10px;">fish.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="frog.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/frog.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/frog.jpeg" alt="Frog avatar">
+                    <div class="asset-name" style="font-size: 10px;">frog.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="jack_russell_dog.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/jack_russell_dog.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/jack_russell_dog.jpeg" alt="Jack Russell Dog avatar">
+                    <div class="asset-name" style="font-size: 10px;">jack_russell_dog.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="jellybean.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/jellybean.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/jellybean.jpeg" alt="Jellybean avatar">
+                    <div class="asset-name" style="font-size: 10px;">jellybean.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="jellyfish.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/jellyfish.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/jellyfish.jpeg" alt="Jellyfish avatar">
+                    <div class="asset-name" style="font-size: 10px;">jellyfish.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="koala.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/koala.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/koala.jpeg" alt="Koala avatar">
+                    <div class="asset-name" style="font-size: 10px;">koala.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="lion.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/lion.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/lion.jpeg" alt="Lion avatar">
+                    <div class="asset-name" style="font-size: 10px;">lion.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="owl.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/owl.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/owl.jpeg" alt="Owl avatar">
+                    <div class="asset-name" style="font-size: 10px;">owl.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="potato.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/potato.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/potato.jpeg" alt="Potato avatar">
+                    <div class="asset-name" style="font-size: 10px;">potato.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="snail.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/snail.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/snail.jpeg" alt="Snail avatar">
+                    <div class="asset-name" style="font-size: 10px;">snail.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="snake.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/snake.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/snake.jpeg" alt="Snake avatar">
+                    <div class="asset-name" style="font-size: 10px;">snake.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="snowman.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/snowman.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/snowman.jpeg" alt="Snowman avatar">
+                    <div class="asset-name" style="font-size: 10px;">snowman.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="squid.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/squid.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/squid.jpeg" alt="Squid avatar">
+                    <div class="asset-name" style="font-size: 10px;">squid.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="squirrel.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/squirrel.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/squirrel.jpeg" alt="Squirrel avatar">
+                    <div class="asset-name" style="font-size: 10px;">squirrel.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="tiger.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/tiger.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/tiger.jpeg" alt="Tiger avatar">
+                    <div class="asset-name" style="font-size: 10px;">tiger.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="tomato.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/tomato.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/tomato.jpeg" alt="Tomato avatar">
+                    <div class="asset-name" style="font-size: 10px;">tomato.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="tree.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/tree.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/tree.jpeg" alt="Tree avatar">
+                    <div class="asset-name" style="font-size: 10px;">tree.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="tyrannosaurus_rex.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/tyrannosaurus_rex.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/tyrannosaurus_rex.jpeg" alt="T-Rex avatar">
+                    <div class="asset-name" style="font-size: 10px;">tyrannosaurus_rex.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="worm.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/worm.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/worm.jpeg" alt="Worm avatar">
+                    <div class="asset-name" style="font-size: 10px;">worm.jpeg</div>
+            </div>
+        </div>
+
+            <!-- Female Avatars -->
+            <h3>Female Avatars (16)</h3>
+            <div class="grid">
+                <div class="asset-card" data-name="female_middle_aged_kitchen.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_middle_aged_kitchen.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_middle_aged_kitchen.jpeg" alt="Female middle aged kitchen avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_middle_aged_kitchen.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_teen_braces_goofy.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_teen_braces_goofy.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_teen_braces_goofy.jpeg" alt="Female teen braces goofy avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_teen_braces_goofy.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_teen_peace_sign.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_teen_peace_sign.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_teen_peace_sign.jpeg" alt="Female teen peace sign avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_teen_peace_sign.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_business_train.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_business_train.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_business_train.jpeg" alt="Female business train avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_business_train.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_cooking_influencer.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_cooking_influencer.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_cooking_influencer.jpeg" alt="Female cooking influencer avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_cooking_influencer.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_dyed_hair.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_dyed_hair.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_dyed_hair.jpeg" alt="Female dyed hair avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_dyed_hair.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_fashion_influencer.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_fashion_influencer.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_fashion_influencer.jpeg" alt="Female fashion influencer avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_fashion_influencer.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_fitness_influencer.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_fitness_influencer.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_fitness_influencer.jpeg" alt="Female fitness influencer avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_fitness_influencer.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_hijab.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_hijab.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_hijab.jpeg" alt="Female hijab avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_hijab.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_hoodie_couch.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_hoodie_couch.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_hoodie_couch.jpeg" alt="Female hoodie couch avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_hoodie_couch.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_laughing.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_laughing.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_laughing.jpeg" alt="Female laughing avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_laughing.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_mom_baby.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_mom_baby.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_mom_baby.jpeg" alt="Female mom baby avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_mom_baby.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_music_vlogger.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_music_vlogger.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_music_vlogger.jpeg" alt="Female music vlogger avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_music_vlogger.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_party_host.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_party_host.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_party_host.jpeg" alt="Female party host avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_party_host.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_streetwear_influencer.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_streetwear_influencer.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_streetwear_influencer.jpeg" alt="Female streetwear influencer avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_streetwear_influencer.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_yoga_instructor.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_yoga_instructor.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_yoga_instructor.jpeg" alt="Female yoga instructor avatar">
+                    <div class="asset-name" style="font-size: 10px;">female_young_adult_yoga_instructor.jpeg</div>
+            </div>
+        </div>
+
+            <!-- Male Avatars -->
+            <h3>Male Avatars (28)</h3>
+            <div class="grid">
+                <div class="asset-card" data-name="male_elderly_plaid_shirt.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_elderly_plaid_shirt.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_elderly_plaid_shirt.jpeg" alt="Male elderly plaid shirt avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_elderly_plaid_shirt.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_middle_aged_balding_polo.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_middle_aged_balding_polo.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_middle_aged_balding_polo.jpeg" alt="Male middle aged balding polo avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_middle_aged_balding_polo.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_middle_aged_hoodie.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_middle_aged_hoodie.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_middle_aged_hoodie.jpeg" alt="Male middle aged hoodie avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_middle_aged_hoodie.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_middle_aged_laughing.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_middle_aged_laughing.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_middle_aged_laughing.jpeg" alt="Male middle aged laughing avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_middle_aged_laughing.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_teen_acne_braces.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_teen_acne_braces.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_teen_acne_braces.jpeg" alt="Male teen acne braces avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_teen_acne_braces.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_teen_braces.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_teen_braces.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_teen_braces.jpeg" alt="Male teen braces avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_teen_braces.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_teen_skater_influencer.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_teen_skater_influencer.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_teen_skater_influencer.jpeg" alt="Male teen skater influencer avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_teen_skater_influencer.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_adjusting_tie.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_adjusting_tie.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_adjusting_tie.jpeg" alt="Male adjusting tie avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_adjusting_tie.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_athletic_stretching.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_athletic_stretching.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_athletic_stretching.jpeg" alt="Male athletic stretching avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_athletic_stretching.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_baseball_cap.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_baseball_cap.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_baseball_cap.jpeg" alt="Male baseball cap avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_baseball_cap.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_bearded_mirror.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_bearded_mirror.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_bearded_mirror.jpeg" alt="Male bearded mirror avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_bearded_mirror.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_bearded_oversized_coat.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_bearded_oversized_coat.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_bearded_oversized_coat.jpeg" alt="Male bearded oversized coat avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_bearded_oversized_coat.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_business_suit.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_business_suit.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_business_suit.jpeg" alt="Male business suit avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_business_suit.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_car_dashboard.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_car_dashboard.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_car_dashboard.jpeg" alt="Male car dashboard avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_car_dashboard.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_car_selfie.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_car_selfie.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_car_selfie.jpeg" alt="Male car selfie avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_car_selfie.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_confident_standing.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_confident_standing.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_confident_standing.jpeg" alt="Male confident standing avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_confident_standing.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_glasses.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_glasses.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_glasses.jpeg" alt="Male glasses avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_glasses.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_late_30s.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_late_30s.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_late_30s.jpeg" alt="Male late 30s avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_late_30s.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_model_espresso.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_model_espresso.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_model_espresso.jpeg" alt="Male model espresso avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_model_espresso.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_musician_guitar.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_musician_guitar.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_musician_guitar.jpeg" alt="Male musician guitar avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_musician_guitar.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_relaxed_lounging.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_relaxed_lounging.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_relaxed_lounging.jpeg" alt="Male relaxed lounging avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_relaxed_lounging.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_running_influencer.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_running_influencer.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_running_influencer.jpeg" alt="Male running influencer avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_running_influencer.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_stubble.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_stubble.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_stubble.jpeg" alt="Male stubble avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_stubble.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_stylish_leaning.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_stylish_leaning.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_stylish_leaning.jpeg" alt="Male stylish leaning avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_stylish_leaning.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_stylish_seated.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_stylish_seated.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_stylish_seated.jpeg" alt="Male stylish seated avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_stylish_seated.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_vintage_leather.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_vintage_leather.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_vintage_leather.jpeg" alt="Male vintage leather avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_vintage_leather.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_winter_jacket.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_winter_jacket.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_winter_jacket.jpeg" alt="Male winter jacket avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_winter_jacket.jpeg</div>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_zoom_call.jpeg" data-type="avatars" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_zoom_call.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_zoom_call.jpeg" alt="Male zoom call avatar">
+                    <div class="asset-name" style="font-size: 10px;">male_young_adult_zoom_call.jpeg</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photos Section -->
+        <div class="section" data-category="photos">
+            <h2>Editorial Photos (11)</h2>
+            <p>Editorial and marketing photos in 3:4 or 4:3 aspect ratio. Click any photo to copy its URL.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="female_young_adult_dyed_hair_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/female_young_adult_dyed_hair_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/female_young_adult_dyed_hair_3_4.jpeg" alt="Female dyed hair photo">
+                </div>
+                <div class="asset-card" data-name="female_young_adult_hijab_elevator_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/female_young_adult_hijab_elevator_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/female_young_adult_hijab_elevator_3_4.jpeg" alt="Female hijab elevator photo">
+                </div>
+                <div class="asset-card" data-name="female_young_adult_home_decor_influencer_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/female_young_adult_home_decor_influencer_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/female_young_adult_home_decor_influencer_3_4.jpeg" alt="Female home decor influencer photo">
+                </div>
+                <div class="asset-card" data-name="female_young_adult_hoodie_couch_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/female_young_adult_hoodie_couch_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/female_young_adult_hoodie_couch_3_4.jpeg" alt="Female hoodie couch photo">
+                </div>
+                <div class="asset-card" data-name="female_young_adult_laughing_friends_4_3.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/female_young_adult_laughing_friends_4_3.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/female_young_adult_laughing_friends_4_3.jpeg" alt="Female laughing friends photo">
+                </div>
+                <div class="asset-card" data-name="female_young_adult_squinting_sunglasses_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/female_young_adult_squinting_sunglasses_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/female_young_adult_squinting_sunglasses_3_4.jpeg" alt="Female sunglasses photo">
+                </div>
+                <div class="asset-card" data-name="male_middle_aged_balding_polo_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/male_middle_aged_balding_polo_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/male_middle_aged_balding_polo_3_4.jpeg" alt="Male balding polo photo">
+                </div>
+                <div class="asset-card" data-name="male_middle_aged_hoodie_4_3.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/male_middle_aged_hoodie_4_3.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/male_middle_aged_hoodie_4_3.jpeg" alt="Male hoodie photo">
+                </div>
+                <div class="asset-card" data-name="male_teen_braces_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/male_teen_braces_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/male_teen_braces_3_4.jpeg" alt="Male teen braces photo">
+                </div>
+                <div class="asset-card" data-name="male_young_adult_athletic_stretching_3_4.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/male_young_adult_athletic_stretching_3_4.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/male_young_adult_athletic_stretching_3_4.jpeg" alt="Male athletic stretching photo">
+                </div>
+                <div class="asset-card" data-name="male_young_adult_business_suit_4_3.jpeg" data-type="photos" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/male_young_adult_business_suit_4_3.jpeg')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/photos/male_young_adult_business_suit_4_3.jpeg" alt="Male business suit photo">
+                </div>
+            </div>
+        </div>
+
+        <!-- Logos Section -->
+        <div class="section" data-category="logos">
+            <h2>Brand Logos (31)</h2>
+            <p>Corporate brand logos for mockups, presentations, and design compositions. Most files are in WebP format for optimal web performance. Click any logo to copy its URL.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="logo_adidas.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_adidas.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_adidas.webp" alt="Adidas logo">
+                </div>
+                <div class="asset-card" data-name="logo_airbnb.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_airbnb.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_airbnb.webp" alt="Airbnb logo">
+                </div>
+                <div class="asset-card" data-name="logo_amazon 2.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_amazon%202.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_amazon%202.webp" alt="Amazon logo">
+                </div>
+                <div class="asset-card" data-name="logo_amd.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_amd.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_amd.webp" alt="AMD logo">
+                </div>
+                <div class="asset-card" data-name="logo_audi.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_audi.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_audi.webp" alt="Audi logo">
+                </div>
+                <div class="asset-card" data-name="logo_chevrolet.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_chevrolet.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_chevrolet.webp" alt="Chevrolet logo">
+                </div>
+                <div class="asset-card" data-name="logo_cola.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_cola.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_cola.webp" alt="Cola logo">
+                </div>
+                <div class="asset-card" data-name="logo_dell.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_dell.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_dell.webp" alt="Dell logo">
+                </div>
+                <div class="asset-card" data-name="logo_disney.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_disney.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_disney.webp" alt="Disney logo">
+                </div>
+                <div class="asset-card" data-name="logo_ford.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_ford.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_ford.webp" alt="Ford logo">
+                </div>
+                <div class="asset-card" data-name="logo_intel.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_intel.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_intel.webp" alt="Intel logo">
+                </div>
+                <div class="asset-card" data-name="logo_johnson.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_johnson.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_johnson.webp" alt="Johnson logo">
+                </div>
+                <div class="asset-card" data-name="logo_logo_amazon.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_logo_amazon.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_logo_amazon.webp" alt="Amazon logo">
+                </div>
+                <div class="asset-card" data-name="logo_logo_apple.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_logo_apple.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_logo_apple.webp" alt="Apple logo">
+                </div>
+                <div class="asset-card" data-name="logo_logo_facebook.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_logo_facebook.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_logo_facebook.webp" alt="Facebook logo">
+                </div>
+                <div class="asset-card" data-name="logo_logo_google.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_logo_google.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_logo_google.webp" alt="Google logo">
+                </div>
+                <div class="asset-card" data-name="logo_logo_medium.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_logo_medium.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_logo_medium.webp" alt="Medium logo">
+                </div>
+                <div class="asset-card" data-name="logo_logo_ms.png" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_logo_ms.png')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_logo_ms.png" alt="Microsoft logo">
+                </div>
+                <div class="asset-card" data-name="logo_lyft.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_lyft.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_lyft.webp" alt="Lyft logo">
+                </div>
+                <div class="asset-card" data-name="logo_mcdonalds.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_mcdonalds.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_mcdonalds.webp" alt="McDonalds logo">
+                </div>
+                <div class="asset-card" data-name="logo_netflix.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_netflix.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_netflix.webp" alt="Netflix logo">
+                </div>
+                <div class="asset-card" data-name="logo_nike.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_nike.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_nike.webp" alt="Nike logo">
+                </div>
+                <div class="asset-card" data-name="logo_openai.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_openai.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_openai.webp" alt="OpenAI logo">
+                </div>
+                <div class="asset-card" data-name="logo_pepsi.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_pepsi.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_pepsi.webp" alt="Pepsi logo">
+                </div>
+                <div class="asset-card" data-name="logo_pg.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_pg.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_pg.webp" alt="P&G logo">
+                </div>
+                <div class="asset-card" data-name="logo_starbucks.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_starbucks.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_starbucks.webp" alt="Starbucks logo">
+                </div>
+                <div class="asset-card" data-name="logo_target.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_target.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_target.webp" alt="Target logo">
+                </div>
+                <div class="asset-card" data-name="logo_tesla.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_tesla.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_tesla.webp" alt="Tesla logo">
+                </div>
+                <div class="asset-card" data-name="logo_uber.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_uber.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_uber.webp" alt="Uber logo">
+                </div>
+                <div class="asset-card" data-name="logo_verizon.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_verizon.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_verizon.webp" alt="Verizon logo">
+                </div>
+                <div class="asset-card" data-name="logo_walmart.webp" data-type="logos" onclick="copyUrl('https://proto.dev.foam.io/assets/logos/logo_walmart.webp')" style="cursor: pointer;">
+                    <img src="https://proto.dev.foam.io/assets/logos/logo_walmart.webp" alt="Walmart logo">
+                </div>
+            </div>
+        </div>
+
+        <!-- Videos Section -->
+        <div class="section" data-category="videos">
+            <h2>Video Content (31)</h2>
+            <p>Promotional, demo, and social media video clips. Click any video to copy its URL.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="coffee_landscape.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/coffee_landscape.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/coffee_landscape.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_beauty_tiktok_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_beauty_tiktok_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_beauty_tiktok_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_funny_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_funny_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_funny_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_mothers_day_tiktok_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_mothers_day_tiktok_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_mothers_day_tiktok_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_nails_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_nails_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_nails_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_01.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_01.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_01.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_02.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_02.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_02.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_03.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_03.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_03.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_04.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_04.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_04.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_05.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_05.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_05.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_06.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_06.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_06.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_07.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_07.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_07.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_08.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_08.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_08.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_09.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_09.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_09.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_10.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_10.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_10.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_11.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_11.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_11.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_12.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_12.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_12.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_13.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_13.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_13.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_14.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_14.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_14.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_yoga_sport_2_landscape.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_yoga_sport_2_landscape.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_yoga_sport_2_landscape.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="female_yoga_sport_landscape.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_yoga_sport_landscape.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_yoga_sport_landscape.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="group_sport_landscape.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/group_sport_landscape.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/group_sport_landscape.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="male_cooking_tiktok_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_cooking_tiktok_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_cooking_tiktok_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="male_funny_2_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_funny_2_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_funny_2_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="male_funny_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_funny_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_funny_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="male_mrbeast_2_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_mrbeast_2_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_mrbeast_2_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="male_mrbeast_3_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_mrbeast_3_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_mrbeast_3_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="male_mrbeast_4_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_mrbeast_4_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_mrbeast_4_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="male_mrbeast_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_mrbeast_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_mrbeast_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="spanish_news_2_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/spanish_news_2_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/spanish_news_2_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="asset-card" data-name="spanish_news_instagram_portrait.mp4" data-type="videos" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/spanish_news_instagram_portrait.mp4')" style="cursor: pointer;">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/spanish_news_instagram_portrait.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fonts Section -->
+        <div class="section" data-category="fonts">
+            <h2>Typography</h2>
+            <p>Hanken Grotesk - Primary brand typeface from Google Fonts for headings, body text, and UI elements. Variable font with weights from 100-900.</p>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 200; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+                </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Thin (200)</div>
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 300; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+                </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Light (300)</div>
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+                </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Regular (400)</div>
+            </div>
+                
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 500; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+        </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Medium (500)</div>
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+                    </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Semibold (600)</div>
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 700; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+                    </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Bold (700)</div>
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 800; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+                    </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Extra Bold (800)</div>
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <div style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 900; font-size: 28px; margin-bottom: 8px; color: #374151;">
+                        The quick brown fox jumps over the lazy dog
+                    </div>
+                    <div style="font-size: 12px; color: #6b7280; font-weight: 400;">Black (900)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metadata Section -->
+        <div class="section" data-category="metadata">
+            <h2>Talent Dataset</h2>
+            <p>Comprehensive talent and creator data for development, testing, and demonstration purposes. Click any file to copy its URL or view its content.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="METADATA_README.md" data-type="metadata" onclick="copyUrl('https://proto.dev.foam.io/assets/METADATA_README.md')">
+                    <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #155FEF 0%, #0F46FF 100%); border-radius: 6px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; font-weight: 600; text-align: center; padding: 20px;">45 Creator<br/>Profiles</div>
+                    <div class="asset-name" style="font-size: 12px;">METADATA_README.md</div>
+                </div>
+                <div class="asset-card" data-name="fake_talent_dataset_100.csv" data-type="metadata" onclick="copyUrl('https://proto.dev.foam.io/assets/fake_talent_dataset_100.csv')">
+                    <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #155FEF 0%, #0F46FF 100%); border-radius: 6px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; font-weight: 600; text-align: center; padding: 20px;">Analytics<br/>Dataset</div>
+                    <div class="asset-name" style="font-size: 12px;">fake_talent_dataset_100.csv</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copy Notification -->
+    <div id="copyNotification" class="copy-notification">
+        URL copied to clipboard!
+    </div>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounts();
+            setupSearch();
+            setupFilters();
+            setupVideos();
+        });
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.asset-card');
+                
+                cards.forEach(card => {
+                    const name = card.getAttribute('data-name').toLowerCase();
+                    const type = card.getAttribute('data-type').toLowerCase();
+                    const isVisible = name.includes(query) || type.includes(query);
+                    card.style.display = isVisible ? 'block' : 'none';
+                });
+                
+                updateCounts();
+            });
+        }
+
+        // Filter functionality
+        function setupFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Update active button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter sections
+                    const sections = document.querySelectorAll('.section');
+                    sections.forEach(section => {
+                        const category = section.getAttribute('data-category');
+                        if (filter === 'all' || category === filter) {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                    
+                    updateCounts();
+                });
+            });
+        }
+
+        // Video functionality
+        function setupVideos() {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => {
+                // Add hover play/pause functionality
+                video.addEventListener('mouseenter', function() {
+                    this.play();
+                });
+                video.addEventListener('mouseleave', function() {
+                    this.pause();
+                    this.currentTime = 0;
+                });
+                
+                // Detect aspect ratio from filename and apply appropriate class
+                const source = video.querySelector('source');
+                if (source && source.src) {
+                    if (source.src.includes('portrait')) {
+                        video.classList.add('portrait');
+                    } else if (source.src.includes('landscape')) {
+                        video.classList.add('landscape');
+                    }
+                }
+            });
+        }
+
+        // Copy URL functionality
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showCopyNotification();
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Show copy notification
+        function showCopyNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.classList.add('show');
+                setTimeout(() => {
+                notification.classList.remove('show');
+                }, 2000);
+        }
+
+        // Function to load and display regular icons properly
+        function loadRegularIcons() {
+            const regularIconImages = document.querySelectorAll('img[src*="/icons/regular/"]');
+            console.log('Found', regularIconImages.length, 'regular icons to convert');
+            
+            regularIconImages.forEach(img => {
+                // Create a container div with proper color context
+                const container = document.createElement('div');
+                container.style.cssText = 'width: 100%; height: 40px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; color: #000000;';
+                
+                // Create object element to display SVG with currentColor context
+                const obj = document.createElement('object');
+                obj.data = img.src;
+                obj.type = 'image/svg+xml';
+                obj.style.cssText = 'width: 16px; height: 16px; pointer-events: none;';
+                
+                container.appendChild(obj);
+                img.parentNode.replaceChild(container, img);
+                console.log('Converted icon:', img.src);
+            });
+            console.log('Finished converting regular icons');
+        }
+
+        // Load regular icons when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadRegularIcons, 100); // Small delay to ensure DOM is fully ready
+        });
+
+        // Update counts
+        function updateCounts() {
+            const totalCards = document.querySelectorAll('.asset-card').length;
+            const visibleCards = document.querySelectorAll('.asset-card[style*="display: none"]').length;
+            
+            document.getElementById('total-count').textContent = totalCards;
+            document.getElementById('visible-count').textContent = totalCards - visibleCards;
+        }
+    </script>
+</body>
+</html>

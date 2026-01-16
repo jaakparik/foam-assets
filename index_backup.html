@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foam Assets Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background: #fafafa;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        h1 { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            color: #1a1a1a; 
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .section { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 24px; 
+            margin-bottom: 24px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section h2 { 
+            color: #2563eb; 
+            margin-bottom: 16px; 
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .section p { margin-bottom: 16px; color: #6b7280; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 16px; 
+            margin-top: 20px;
+        }
+        .asset-card { 
+            background: #f8fafc; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+            padding: 16px; 
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .asset-card:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: #2563eb;
+        }
+        .asset-card img, .asset-card video { 
+            width: 100%; 
+            height: 120px; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            margin-bottom: 12px;
+            background: #e5e7eb;
+        }
+        .asset-card .icon { 
+            width: 100%; 
+            height: 120px; 
+            background: #f1f5f9; 
+            border-radius: 6px; 
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #64748b;
+        }
+        .asset-card .font { 
+            width: 100%; 
+            height: 120px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            border-radius: 6px; 
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+        }
+        .asset-name { 
+            font-size: 0.875rem; 
+            color: #374151; 
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        .search { 
+            margin-bottom: 32px; 
+            text-align: center;
+        }
+        .search input { 
+            width: 100%; 
+            max-width: 400px; 
+            padding: 12px 16px; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 8px; 
+            font-size: 1rem;
+            outline: none;
+        }
+        .search input:focus { border-color: #2563eb; }
+        .filter-buttons { 
+            margin-bottom: 24px; 
+            text-align: center;
+        }
+        .filter-btn { 
+            background: #f3f4f6; 
+            border: 1px solid #d1d5db; 
+            padding: 8px 16px; 
+            margin: 0 4px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-btn:hover, .filter-btn.active { 
+            background: #2563eb; 
+            color: white; 
+            border-color: #2563eb;
+        }
+        .hidden { display: none; }
+        .stats { 
+            text-align: center; 
+            margin-bottom: 32px; 
+            color: #6b7280;
+        }
+        .copy-url { 
+            background: #10b981; 
+            color: white; 
+            border: none; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.75rem; 
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .copy-url:hover { background: #059669; }
+        .copy-success { background: #059669 !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Foam Assets Demo</h1>
+        
+        <div class="stats">
+            <span id="total-count">0</span> total assets • 
+            <span id="visible-count">0</span> visible
+        </div>
+
+        <div class="search">
+            <input type="text" id="searchInput" placeholder="Search assets by name, type, or description...">
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="brand">Brand</button>
+            <button class="filter-btn" data-filter="icons">Icons</button>
+            <button class="filter-btn" data-filter="avatars">Avatars</button>
+            <button class="filter-btn" data-filter="photos">Photos</button>
+            <button class="filter-btn" data-filter="videos">Videos</button>
+            <button class="filter-btn" data-filter="fonts">Fonts</button>
+        </div>
+
+        <!-- Brand Section -->
+        <div class="section" data-category="brand">
+            <h2>🏷️ Brand Assets</h2>
+            <p>Official Foam brand logos in various formats and color schemes. Use light variants for light backgrounds and dark variants for dark backgrounds.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="foam_logo_outline_text_light.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_outline_text_light.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_outline_text_light.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="foam_logo_filled_text_light.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_filled_text_light.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_filled_text_light.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_filled_light.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_square_filled_light.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_filled_light.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="foam_logo_filled_text_dark.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_filled_text_dark.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_filled_text_dark.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="foam_logo_outline_text_dark.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_outline_text_dark.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_outline_text_dark.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_filled_dark.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_square_filled_dark.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_filled_dark.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_outline_dark.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_square_outline_dark.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_outline_dark.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="foam_logo_square_outline_light.svg" data-type="brand">
+                    <div class="icon">🎨</div>
+                    <div class="asset-name">foam_logo_square_outline_light.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/brand/foam_logo_square_outline_light.svg')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Icons Color Section -->
+        <div class="section" data-category="icons">
+            <h2>🎨 Color Icons</h2>
+            <p>Full-color icons representing brands, platforms, and app features. Commonly used at 16x16px in UI.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="Instagram.svg" data-type="icons">
+                    <div class="icon">📱</div>
+                    <div class="asset-name">Instagram.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Instagram.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="TikTok.svg" data-type="icons">
+                    <div class="icon">📱</div>
+                    <div class="asset-name">TikTok.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/TikTok.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="YouTube.svg" data-type="icons">
+                    <div class="icon">📱</div>
+                    <div class="asset-name">YouTube.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/YouTube.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="LinkedIn.svg" data-type="icons">
+                    <div class="icon">📱</div>
+                    <div class="asset-name">LinkedIn.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/LinkedIn.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Google.svg" data-type="icons">
+                    <div class="icon">📱</div>
+                    <div class="asset-name">Google.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Google.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="FilePdf.svg" data-type="icons">
+                    <div class="icon">📄</div>
+                    <div class="asset-name">FilePdf.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/FilePdf.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Analytics_ce.svg" data-type="icons">
+                    <div class="icon">📊</div>
+                    <div class="asset-name">Analytics_ce.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Analytics_ce.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Email_ce.svg" data-type="icons">
+                    <div class="icon">📧</div>
+                    <div class="asset-name">Email_ce.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/color/Email_ce.svg')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Icons Regular Section -->
+        <div class="section" data-category="icons">
+            <h2>⚡ Regular Icons</h2>
+            <p>Monochrome line-style icons for UI controls and interactions. Common size is 16x16px.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="Close.svg" data-type="icons">
+                    <div class="icon">✕</div>
+                    <div class="asset-name">Close.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Close.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Search.svg" data-type="icons">
+                    <div class="icon">🔍</div>
+                    <div class="asset-name">Search.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Search.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Heart.svg" data-type="icons">
+                    <div class="icon">❤️</div>
+                    <div class="asset-name">Heart.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Heart.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Eye.svg" data-type="icons">
+                    <div class="icon">👁️</div>
+                    <div class="asset-name">Eye.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Eye.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Chat.svg" data-type="icons">
+                    <div class="icon">💬</div>
+                    <div class="asset-name">Chat.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Chat.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Bell.svg" data-type="icons">
+                    <div class="icon">🔔</div>
+                    <div class="asset-name">Bell.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Bell.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Person.svg" data-type="icons">
+                    <div class="icon">👤</div>
+                    <div class="asset-name">Person.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Person.svg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="Settings.svg" data-type="icons">
+                    <div class="icon">⚙️</div>
+                    <div class="asset-name">Cogwheel.svg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/icons/regular/Cogwheel.svg')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avatars Animals Section -->
+        <div class="section" data-category="avatars">
+            <h2>🐾 Animal Avatars</h2>
+            <p>Illustrated animal avatars for placeholders, gamification, or profile images. Square ratio only.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="cat.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/cat.jpeg" alt="Cat avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">🐱</div>
+                    <div class="asset-name">cat.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/cat.jpeg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="dog.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/dog.jpeg" alt="Dog avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">🐕</div>
+                    <div class="asset-name">dog.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/dog.jpeg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="lion.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/lion.jpeg" alt="Lion avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">🦁</div>
+                    <div class="asset-name">lion.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/lion.jpeg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="owl.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/animals/owl.jpeg" alt="Owl avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">🦉</div>
+                    <div class="asset-name">owl.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/animals/owl.jpeg')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avatars Male Section -->
+        <div class="section" data-category="avatars">
+            <h2>👨 Male Avatars</h2>
+            <p>Square photos of male subjects for profile images, product demos, and character representation.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="male_young_adult_business_suit.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_business_suit.jpeg" alt="Male business suit avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">👔</div>
+                    <div class="asset-name">male_young_adult_business_suit.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_business_suit.jpeg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_athletic_stretching.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/male/male_young_adult_athletic_stretching.jpeg" alt="Male athletic avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">🏃</div>
+                    <div class="asset-name">male_young_adult_athletic_stretching.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/male/male_young_adult_athletic_stretching.jpeg')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avatars Female Section -->
+        <div class="section" data-category="avatars">
+            <h2>👩 Female Avatars</h2>
+            <p>Square photos of female subjects for profile images, product demos, and character representation.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="female_young_adult_yoga_instructor.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_yoga_instructor.jpeg" alt="Female yoga instructor avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">🧘</div>
+                    <div class="asset-name">female_young_adult_yoga_instructor.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_yoga_instructor.jpeg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="female_young_adult_fashion_influencer.jpeg" data-type="avatars">
+                    <img src="https://proto.dev.foam.io/assets/avatars/female/female_young_adult_fashion_influencer.jpeg" alt="Female fashion influencer avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">👗</div>
+                    <div class="asset-name">female_young_adult_fashion_influencer.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/avatars/female/female_young_adult_fashion_influencer.jpeg')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photos Section -->
+        <div class="section" data-category="photos">
+            <h2>📸 Editorial Photos</h2>
+            <p>Editorial and marketing photos in 3:4 or 4:3 aspect ratio. Not suitable for avatars due to cropping.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="female_young_adult_hijab_elevator_3_4.jpeg" data-type="photos">
+                    <img src="https://proto.dev.foam.io/assets/photos/female_young_adult_hijab_elevator_3_4.jpeg" alt="Female in elevator photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">📷</div>
+                    <div class="asset-name">female_young_adult_hijab_elevator_3_4.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/female_young_adult_hijab_elevator_3_4.jpeg')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="male_young_adult_business_suit_4_3.jpeg" data-type="photos">
+                    <img src="https://proto.dev.foam.io/assets/photos/male_young_adult_business_suit_4_3.jpeg" alt="Male business suit photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon" style="display:none;">📷</div>
+                    <div class="asset-name">male_young_adult_business_suit_4_3.jpeg</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/photos/male_young_adult_business_suit_4_3.jpeg')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Videos Section -->
+        <div class="section" data-category="videos">
+            <h2>🎥 Video Content</h2>
+            <p>Promotional, demo, and social media video clips. Use portrait for TikTok/Instagram, landscape for YouTube.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="female_beauty_tiktok_portrait.mp4" data-type="videos">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_beauty_tiktok_portrait.mp4" type="video/mp4">
+                    </video>
+                    <div class="asset-name">female_beauty_tiktok_portrait.mp4</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_beauty_tiktok_portrait.mp4')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="coffee_landscape.mp4" data-type="videos">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/coffee_landscape.mp4" type="video/mp4">
+                    </video>
+                    <div class="asset-name">coffee_landscape.mp4</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/coffee_landscape.mp4')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="female_namimatcha_portrait_01.mp4" data-type="videos">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_01.mp4" type="video/mp4">
+                    </video>
+                    <div class="asset-name">female_namimatcha_portrait_01.mp4</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/female_namimatcha_portrait_01.mp4')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="male_cooking_tiktok_portrait.mp4" data-type="videos">
+                    <video muted loop>
+                        <source src="https://proto.dev.foam.io/assets/videos/male_cooking_tiktok_portrait.mp4" type="video/mp4">
+                    </video>
+                    <div class="asset-name">male_cooking_tiktok_portrait.mp4</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/videos/male_cooking_tiktok_portrait.mp4')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fonts Section -->
+        <div class="section" data-category="fonts">
+            <h2>🔤 Typography</h2>
+            <p>Founders Grotesk - Primary brand typeface for headings, body text, and UI elements. WOFF2 format for optimal web performance.</p>
+            <div class="grid">
+                <div class="asset-card" data-name="founders-grotesk-light.woff2" data-type="fonts">
+                    <div class="font">Aa</div>
+                    <div class="asset-name">Light (300)</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/fonts/founders-grotesk-light.woff2')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="founders-grotesk-regular.woff2" data-type="fonts">
+                    <div class="font">Aa</div>
+                    <div class="asset-name">Regular (400)</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/fonts/founders-grotesk-regular.woff2')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="founders-grotesk-medium.woff2" data-type="fonts">
+                    <div class="font">Aa</div>
+                    <div class="asset-name">Medium (500)</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/fonts/founders-grotesk-medium.woff2')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="founders-grotesk-semibold.woff2" data-type="fonts">
+                    <div class="font">Aa</div>
+                    <div class="asset-name">Semibold (600)</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/fonts/founders-grotesk-semibold.woff2')">Copy URL</button>
+                </div>
+                <div class="asset-card" data-name="founders-grotesk-bold.woff2" data-type="fonts">
+                    <div class="font">Aa</div>
+                    <div class="asset-name">Bold (700)</div>
+                    <button class="copy-url" onclick="copyUrl('https://proto.dev.foam.io/assets/fonts/founders-grotesk-bold.woff2')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounts();
+            setupSearch();
+            setupFilters();
+            setupVideos();
+        });
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.asset-card');
+                
+                cards.forEach(card => {
+                    const name = card.getAttribute('data-name').toLowerCase();
+                    const type = card.getAttribute('data-type').toLowerCase();
+                    const isVisible = name.includes(query) || type.includes(query);
+                    card.style.display = isVisible ? 'block' : 'none';
+                });
+                
+                updateCounts();
+            });
+        }
+
+        // Filter functionality
+        function setupFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Update active button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter sections
+                    const sections = document.querySelectorAll('.section');
+                    sections.forEach(section => {
+                        const category = section.getAttribute('data-category');
+                        if (filter === 'all' || category === filter) {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                    
+                    updateCounts();
+                });
+            });
+        }
+
+        // Video functionality
+        function setupVideos() {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => {
+                video.addEventListener('mouseenter', function() {
+                    this.play();
+                });
+                video.addEventListener('mouseleave', function() {
+                    this.pause();
+                    this.currentTime = 0;
+                });
+            });
+        }
+
+        // Copy URL functionality
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copy-success');
+                setTimeout(() => {
+                    btn.textContent = 'Copy URL';
+                    btn.classList.remove('copy-success');
+                }, 2000);
+            });
+        }
+
+        // Update counts
+        function updateCounts() {
+            const totalCards = document.querySelectorAll('.asset-card').length;
+            const visibleCards = document.querySelectorAll('.asset-card[style*="display: none"]').length;
+            
+            document.getElementById('total-count').textContent = totalCards;
+            document.getElementById('visible-count').textContent = totalCards - visibleCards;
+        }
+    </script>
+</body>
+</html>

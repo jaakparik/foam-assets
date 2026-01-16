@@ -1,0 +1,14 @@
+<!-- Icon: Twitch -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_863_475)">
+<path d="M13.3334 7.94595L11.1667 10.1081H9.00008L7.10425 12V10.1081H4.66675V2H13.3334V7.94595Z" fill="white"/>
+<path d="M5.00009 1.33331L2.61914 3.71427V12.2857H5.47628V14.6666L7.85724 12.2857H9.762L14.0477 7.99998V1.33331H5.00009ZM13.0953 7.52379L11.1906 9.42855H9.28581L7.61914 11.0952V9.42855H5.47628V2.28569H13.0953V7.52379Z" fill="black"/>
+<path d="M11.6667 3.95233H10.7144V6.80947H11.6667V3.95233Z" fill="black"/>
+<path d="M9.0476 3.95233H8.09521V6.80947H9.0476V3.95233Z" fill="black"/>
+</g>
+<defs>
+<clipPath id="clip0_863_475">
+<rect width="11.4286" height="13.3333" fill="white" transform="translate(2.61914 1.33331)"/>
+</clipPath>
+</defs>
+</svg>
